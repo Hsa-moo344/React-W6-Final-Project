@@ -9,7 +9,7 @@ export default function App() {
         <footer>
           The Weather App was coded by Hsa Moo Moo {""}
           <a
-            href="https://github.com/Hsa-moo344/My-Portfolio-project-page"
+            href="https://github.com/Hsa-moo344/React-W6-Final-Project/tree/main/src"
             target="_blank"
             rel="noreferrer"
           >
