@@ -1,20 +1,27 @@
-import React from "react";
 import "./App.css";
 import Weather from "./Weather";
+
 export default function App() {
   return (
     <div className="App">
-      <div className="container">
-        <Weather defaultCity="Mae Sot" />
-        <footer>
-          The Weather App was coded by Hsa Moo Moo {""}
+      <div className="container-sm">
+        <div className="header">
+          <div className="header-body">
+            <br />
+            <Weather defaultCity="Mae Sot" />
+          </div>
+        </div>
+        <br />
+        <footer class="d-none d-md-block">
           <a
-            href="https://github.com/Hsa-moo344/React-W6-Final-Project/tree/main/src"
+            href="https://githttps://github.com/Hsa-moo344/React-W6-Final-Project/tree/main/srchub.com/DelilahMureriwa/my-weather-app"
             target="_blank"
             rel="noreferrer"
+            className="refer"
           >
-            open-sourced on GitHub
+            Hsa Moo Moo
           </a>
+          {""} Open Source
         </footer>
       </div>
     </div>

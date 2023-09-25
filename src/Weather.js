@@ -1,25 +1,25 @@
 import React, { useState } from "react";
-import WeatherInfo from "./WeatherInfo";
-import WeatherForecast from "./WeatherForecast";
 import axios from "axios";
-import "./Weather.css";
+import FormatDate from "./FormatDate";
+import WeatherTemperature from "./WeatherTemperature";
+import ForecastTemperature from "./ForecastTemperature";
 
 export default function Weather(props) {
-  const [weatherData, setWeatherData] = useState({ ready: false });
   const [city, setCity] = useState(props.defaultCity);
+  const [loaded, setLoaded] = useState(false);
+  const [weather, setWeather] = useState("");
 
-  function handleResponse(response) {
-    console.log(response.data);
-    setWeatherData({
-      ready: true,
-      coordinates: response.data.coord,
+  function displayWeather(response) {
+    setLoaded(true);
+    setWeather({
       temperature: response.data.main.temp,
-      humidity: response.data.main.humidity,
       date: new Date(response.data.dt * 1000),
       description: response.data.weather[0].description,
-      icon: response.data.weather[0].icon,
+      humidity: response.data.main.humidity,
       wind: response.data.wind.speed,
+      icon: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
       city: response.data.name,
+      coordinates: response.data.coord,
     });
   }
 
@@ -27,45 +27,70 @@ export default function Weather(props) {
     event.preventDefault();
     search();
   }
+
   function handleCityChange(event) {
     setCity(event.target.value);
   }
 
   function search() {
-    const apiKey = "f3009e4852fa0a079dab291dabf020c4";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(handleResponse);
+    const apiKey = "6f578b96aa9505bcce148ac22cb85794";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayWeather);
   }
 
-  if (weatherData.ready) {
+  if (loaded) {
     return (
-      <div className="Weather">
-        <form onSubmit={handleSubmit}>
-          <div className="row">
-            <div className="col-9 ">
+      <div>
+        <h1>{weather.city}</h1>
+        <div className="row">
+          <div className="col-sm-7">
+            <div className="date">
+              <span className="day">
+                <FormatDate date={weather.date} />
+              </span>
+              <span className="description">{weather.description}</span>
+            </div>
+          </div>
+          <div className="col-sm-6">
+            <form onSubmit={handleSubmit}>
               <input
-                type="search"
-                placeholder="Enter a city.."
+                type="text"
                 className="form-control"
+                placeholder="Enter a city..."
                 autoFocus="on"
                 onChange={handleCityChange}
               />
-            </div>
-            <div className="col-3 ">
-              <input
-                type="submit"
-                value="Search"
-                className="btn btn-primary w-100"
-              />
+            </form>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm-1.5 main">
+            <div className="main-icon">
+              <img src={weather.icon} alt="weather-icon" width="120" />
             </div>
           </div>
-        </form>
-        <WeatherInfo data={weatherData} />
-        <WeatherForecast coordinates={weatherData.coordinates} />
+          <div className="col-sm-5 temp main">
+            <WeatherTemperature celsius={weather.temperature} />
+          </div>
+          <div className="col-4 appearance">
+            <ul>
+              <li>
+                Humidity: <span className="humidity"></span>
+                {weather.humidity}%
+              </li>
+              <li>
+                Wind: <span className="wind"></span>
+                {Math.round(weather.wind)}km/h
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br />
+        <ForecastTemperature coordinates={weather.coordinates} />
       </div>
     );
   } else {
     search();
-    return "Loading...";
+    return null;
   }
 }
